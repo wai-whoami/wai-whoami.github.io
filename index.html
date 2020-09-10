@@ -145,6 +145,89 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/10/adworld-freshman-int-overflow-wp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="lightyami">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/10/adworld-freshman-int-overflow-wp/" class="post-title-link" itemprop="url">adworld-freshman-int-overflow-wp</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-09-10 22:43:08 / Modified: 22:42:15" itemprop="dateCreated datePublished" datetime="2020-09-10T22:43:08+08:00">2020-09-10</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>攻防世界pwn题目<a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5058&page=1" target="_blank" rel="noopener">新手练习区int-overflow</a></p>
+<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="./1.png" alt="Alt text" title="Optional title"></p>
+<h3 id="2-分析程序"><a href="#2-分析程序" class="headerlink" title="2.分析程序"></a>2.分析程序</h3><p><img src="./2.png" alt="Alt text" title="Optional title"></p>
+<p>可以发现，如果想要继续运行的话，需要输入1，否则，程序结束。</p>
+<p><img src="./3.png" alt="Alt text" title="Optional title"></p>
+<p>发现了read函数，首先想到了栈溢出漏洞。<br>但是，却发现允许输入并送入指针空间的字符小于溢出所必须的字符数。<br>所以无法构成溢出。</p>
+<p>再进入check_passwd()函数一探究竟。</p>
+<p><img src="./4.png" alt="Alt text" title="Optional title"></p>
+<p>这段代码对用户输入的密码计算了长度，如果 <strong>长度&lt;=3 或者 长度&gt;8</strong><br>则会提示”Invalid Password”，并退出程序。</p>
+<p>发现有个strcpy()函数，把s的字符串复制到dest中。看看dest的存储空间。</p>
+<p><img src="./5.png" alt="Alt text" title="Optional title"></p>
+<p>这里也存在溢出漏洞，让s的长度大于dest正常输入的最大数量，覆盖到返回地址就可以指向到我们想要执行的地方了。然而，问题是s的长度被v3的大小限制了。我们再看看计算s大小时，存放v3的寄存器。</p>
+<p><img src="./6.png" alt="Alt text" title="Optional title"></p>
+<p>这里有个al寄存器，al寄存器一共有8位比特。<br>v3被定义为无符号整形。所以al最大可以存放255的数据，最小为0。</p>
+<p>之后，我们发现了”cat flag”,在what_is_this函数里面。</p>
+<p><img src="./7.png" alt="Alt text" title="Optional title"></p>
+<p>函数的起始地址为 <strong><em>0x0804868b</em></strong></p>
+<p><img src="./8.png" alt="Alt text" title="Optional title"></p>
+<h3 id="3-整体思路"><a href="#3-整体思路" class="headerlink" title="3.整体思路"></a>3.整体思路</h3><p>strcpy()函数的存在，使得dest的栈溢出成为了可能。<br>同时，v3的最大值只能取到255。<br>所以，只要我们控制输入密码的长度在259<del>263之间(或者其他可行的大小)，使整数溢出，从而间接控制v3处于 **3</del>8**之间。</p>
+<p>我们只需在特定位置，把系统函数的地址写入s中，在控制s的长度，就可以绕过v3的密码长度检查，然后利用栈溢出，获取flag</p>
+<h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">r &#x3D; remote(&quot;ip&#x2F;url&quot;,port)</span><br><span class="line">r.sendlineafter(&quot;Your choice:&quot;,&#39;1&#39;)</span><br><span class="line">r.sendlineafter(&quot;your username&quot;,&#39;aaaa&#39;)</span><br><span class="line">r.sendlineafter(&quot;your passwd:&quot;,&#39;a&#39;*0x18+p32(sys_addr)+&#39;a&#39;*231)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p><img src="./9.png" alt="Alt text" title="Optional title"></p>
+<p><img src="./10.png" alt="Alt text" title="Optional title"></p>
+<p><img src="./11.png" alt="Alt text" title="Optional title"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/10/adworld-freshman-cgpwn2-wp/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -916,7 +999,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
