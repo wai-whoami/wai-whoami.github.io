@@ -27,20 +27,20 @@
 <meta property="og:site_name" content="lightyami&#39;s blogs">
 <meta property="og:description" content="攻防世界pwn题目 新手练习区hello_pwn 1.下载附件 下载完成后，使用ida pro打开  2.先找到main()函数，按F5生成伪代码 3.分析这个程序 存在一个read()函数，允许用户输入最大16个字符，但是没有对用户输入进行检查。进入unk_601068地址看看有什么东西。  发现存在栈溢出漏洞，可已通过对unk_601068的写入，覆盖到dword_60106C的内容。 可以看">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://wai-whoami.github.io/adworld-freshman-hello-pwn-wp/adworld-hello-pwn-images/1.png">
-<meta property="og:image" content="https://wai-whoami.github.io/adworld-freshman-hello-pwn-wp/adworld-hello-pwn-images/2.png">
-<meta property="og:image" content="https://wai-whoami.github.io/adworld-freshman-hello-pwn-wp/adworld-hello-pwn-images/3.png">
-<meta property="og:image" content="https://wai-whoami.github.io/adworld-freshman-hello-pwn-wp/adworld-hello-pwn-images/3.png">
-<meta property="og:image" content="https://wai-whoami.github.io/adworld-freshman-hello-pwn-wp/adworld-hello-pwn-images/4.png">
-<meta property="og:image" content="https://wai-whoami.github.io/adworld-freshman-hello-pwn-wp/adworld-hello-pwn-images/5.png">
-<meta property="og:image" content="https://wai-whoami.github.io/adworld-freshman-hello-pwn-wp/adworld-hello-pwn-images/6.png">
-<meta property="og:image" content="https://wai-whoami.github.io/adworld-freshman-hello-pwn-wp/adworld-hello-pwn-images/7.png">
-<meta property="og:image" content="https://wai-whoami.github.io/adworld-freshman-hello-pwn-wp/adworld-hello-pwn-images/8.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-hello-pwn-images/1.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-hello-pwn-images/2.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-hello-pwn-images/3.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-hello-pwn-images/3.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-hello-pwn-images/4.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-hello-pwn-images/5.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-hello-pwn-images/6.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-hello-pwn-images/7.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-hello-pwn-images/8.png">
 <meta property="article:published_time" content="2020-09-07T05:09:04.732Z">
-<meta property="article:modified_time" content="2020-09-07T05:08:20.241Z">
+<meta property="article:modified_time" content="2020-10-12T12:03:35.007Z">
 <meta property="article:author" content="lightyami">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://wai-whoami.github.io/adworld-freshman-hello-pwn-wp/adworld-hello-pwn-images/1.png">
+<meta name="twitter:image" content="https://wai-whoami.github.io/images/adworld-hello-pwn-images/1.png">
 
 <link rel="canonical" href="https://wai-whoami.github.io/adworld-freshman-hello-pwn-wp/">
 
@@ -182,10 +182,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-09-07 13:09:04 / Modified: 13:08:20" itemprop="dateCreated datePublished" datetime="2020-09-07T13:09:04+08:00">2020-09-07</time>
+              <time title="Created: 2020-09-07 13:09:04" itemprop="dateCreated datePublished" datetime="2020-09-07T13:09:04+08:00">2020-09-07</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-12 20:03:35" itemprop="dateModified" datetime="2020-10-12T20:03:35+08:00">2020-10-12</time>
+              </span>
 
           
 
@@ -199,26 +205,26 @@
 
       
         <p>攻防世界pwn题目 <a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5052&page=1" target="_blank" rel="noopener">新手练习区hello_pwn</a></p>
-<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="./adworld-hello-pwn-images/1.png" alt="Alt text" title="Optional title"></p>
+<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="/images/adworld-hello-pwn-images/1.png" alt="Alt text" title="Optional title"></p>
 <p>下载完成后，使用ida pro打开</p>
-<p><img src="./adworld-hello-pwn-images/2.png" alt="Alt text" title="Optional title"></p>
-<h3 id="2-先找到main-函数，按F5生成伪代码"><a href="#2-先找到main-函数，按F5生成伪代码" class="headerlink" title="2.先找到main()函数，按F5生成伪代码"></a>2.先找到main()函数，按F5生成伪代码</h3><p><img src="./adworld-hello-pwn-images/3.png" alt="Alt text" title="Optional title"></p>
-<h3 id="3-分析这个程序"><a href="#3-分析这个程序" class="headerlink" title="3.分析这个程序"></a>3.分析这个程序</h3><p><img src="./adworld-hello-pwn-images/3.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-hello-pwn-images/2.png" alt="Alt text" title="Optional title"></p>
+<h3 id="2-先找到main-函数，按F5生成伪代码"><a href="#2-先找到main-函数，按F5生成伪代码" class="headerlink" title="2.先找到main()函数，按F5生成伪代码"></a>2.先找到main()函数，按F5生成伪代码</h3><p><img src="/images/adworld-hello-pwn-images/3.png" alt="Alt text" title="Optional title"></p>
+<h3 id="3-分析这个程序"><a href="#3-分析这个程序" class="headerlink" title="3.分析这个程序"></a>3.分析这个程序</h3><p><img src="/images/adworld-hello-pwn-images/3.png" alt="Alt text" title="Optional title"></p>
 <p>存在一个read()函数，允许用户输入最大16个字符，但是没有对用户输入进行检查。进入<br><strong>unk_601068</strong>地址看看有什么东西。</p>
-<p><img src="./adworld-hello-pwn-images/4.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-hello-pwn-images/4.png" alt="Alt text" title="Optional title"></p>
 <p>发现存在栈溢出漏洞，可已通过对unk_601068的写入，覆盖到<br><strong><em>dword_60106C</em></strong><br>的内容。</p>
 <h4 id="可以看出对unk-601068写入4个字节后就可以覆盖到dword-60106C"><a href="#可以看出对unk-601068写入4个字节后就可以覆盖到dword-60106C" class="headerlink" title="可以看出对unk_601068写入4个字节后就可以覆盖到dword_60106C"></a>可以看出对unk_601068写入4个字节后就可以覆盖到dword_60106C</h4><p>回到伪代码界面，继续阅读。有一个条件判断，里面有个函数。查看这个函数的功能。</p>
-<p><img src="./adworld-hello-pwn-images/5.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-hello-pwn-images/5.png" alt="Alt text" title="Optional title"></p>
 <p>发现可以<br><strong><em>得到flag</em></strong><br>的语句。</p>
 <h4 id="思路就有了-利用read-函数，对dword-60106C进行覆盖，使其值等于0x6E756161，进入函数，查看flag"><a href="#思路就有了-利用read-函数，对dword-60106C进行覆盖，使其值等于0x6E756161，进入函数，查看flag" class="headerlink" title="思路就有了,利用read()函数，对dword_60106C进行覆盖，使其值等于0x6E756161，进入函数，查看flag"></a>思路就有了,利用read()函数，对dword_60106C进行覆盖，使其值等于0x6E756161，进入函数，查看flag</h4><h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><p>payload文件如下</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p &#x3D; remote(&quot;ip&#x2F;url&quot;,port);</span><br><span class="line">p.send(&#39;a&#39;*4+p32(0x6E756161));</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
 
 <h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p>获取在线场景</p>
-<p><img src="./adworld-hello-pwn-images/6.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-hello-pwn-images/6.png" alt="Alt text" title="Optional title"></p>
 <p>编写payload</p>
-<p><img src="./adworld-hello-pwn-images/7.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-hello-pwn-images/7.png" alt="Alt text" title="Optional title"></p>
 <p>执行脚本，得到flag</p>
-<p><img src="./adworld-hello-pwn-images/8.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-hello-pwn-images/8.png" alt="Alt text" title="Optional title"></p>
 
     </div>
 

